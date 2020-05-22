@@ -2,6 +2,8 @@
 test_run_dir/*
 /generated/
 
+# local verilator compile
+/verilator/
 
 ### XilinxISE template
 # intermediate build files

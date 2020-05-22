@@ -13,10 +13,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Verilator from Ubuntu Package Sources
+    - name: Cache Verilator Build
+      id: cache-verilator
+      uses: actions/cache@v1
+      with:
+        path: verilator/root
+        key: ${{ runner.os }}-build-${{ hashFiles('build_verilator.sh') }}-1
+
+    - name: Compile Verilator from Source
+      if: steps.cache-verilator.outputs.cache-hit != 'true'
+      run: ./build_verilator.sh
+       
+    - name: Add Verilator to Path
       run: |
-        sudo apt-get install verilator -y
-        verilator --version
+       ls $GITHUB_WORKSPACE/verilator/root/bin/
+       echo "::add-path::$GITHUB_WORKSPACE/verilator/root/bin/"
+
+    - name: Print Verilator Version
+      run: verilator --version
 
     - name: Set up JDK 11
       uses: actions/setup-java@v1
